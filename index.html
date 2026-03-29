@@ -72,8 +72,10 @@
     #site-wrap {
       position: relative;
       z-index: 1;
-      width: min(720px, 95vw);
-      /* 4:3 is enforced per section, not overall */
+      height: min(92vh, calc(95vw * 3 / 4));
+      width: min(95vw, calc(92vh * 4 / 3), 1400px);
+      display: flex;
+      flex-direction: column;
     }
 
     /* ── Header Banner ── */
