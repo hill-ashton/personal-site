@@ -975,57 +975,107 @@ setInterval(updateClock, 1000);
 updateClock();
 
 // ══════════════════════════════════════════════
-// AUDIO PLAYER
+// AUDIO PLAYER — PLAYLIST
 // ══════════════════════════════════════════════
-const audio = document.getElementById('site-audio');
-const playBtn = document.getElementById('play-btn');
+//
+// ╔══════════════════════════════════════════╗
+// ║  ADD YOUR TRACKS HERE                   ║
+// ║  Path is relative to index.html         ║
+// ║  e.g. if your songs are in music/       ║
+// ║  write:  src: 'music/song.mp3'          ║
+// ╚══════════════════════════════════════════╝
+const PLAYLIST = [
+  { title: 'Rest Area - Kirby Super Star Ultra',   src: 'music/kirbyRestArea.mp3' },
+  { title: 'Queen\'s Garden - Maplestory',   src: 'music/queensGarden.mp3' },
+  { title: 'Missing You - Maplestory', src: 'music/missingYou.mp3' },
+  { title: 'Jubilife Village - Pokemon Legends Arceus', src: 'music/jubilifeVillage.mp3' },
+  // add as many as you like:
+  // { title: 'my track', src: 'music/mytrack.ogg' },
+];
+ 
+const audio    = document.getElementById('site-audio');
+const playBtn  = document.getElementById('play-btn');
+const prevBtn  = document.getElementById('prev-btn');
+const nextBtn  = document.getElementById('next-btn');
 const progressBar = document.getElementById('progress-bar');
-const playerTime = document.getElementById('player-time');
-const trackName = document.getElementById('player-track-name');
-
-// Extract filename from src for display
-(function(){
-  const src = audio.src || '';
-  const parts = src.split('/');
-  const file = parts[parts.length - 1];
-  if(file && file !== 'your-song.mp3') {
-    trackName.textContent = '♪ ' + decodeURIComponent(file);
+const playerTime  = document.getElementById('player-time');
+const trackName   = document.getElementById('player-track-name');
+const queueEl     = document.getElementById('player-queue');
+ 
+let currentIndex = 0;
+ 
+function fmtTime(s){
+  if(!s || isNaN(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60).toString().padStart(2, '0');
+  return m + ':' + sec;
+}
+ 
+function buildQueue(){
+  queueEl.innerHTML = '';
+  PLAYLIST.forEach((track, i) => {
+    const div = document.createElement('div');
+    div.className = 'queue-item' + (i === currentIndex ? ' playing' : '');
+    div.textContent = track.title;
+    div.onclick = () => loadTrack(i, true);
+    queueEl.appendChild(div);
+  });
+}
+ 
+function loadTrack(index, autoplay = false){
+  if(!PLAYLIST.length) return;
+  currentIndex = ((index % PLAYLIST.length) + PLAYLIST.length) % PLAYLIST.length;
+  const track = PLAYLIST[currentIndex];
+  audio.src = track.src;
+  trackName.textContent = '♪ ' + track.title;
+  progressBar.style.width = '0%';
+  playerTime.textContent = '0:00';
+  playBtn.textContent = '▶';
+  buildQueue();
+  if(autoplay){
+    audio.play().catch(() => {});
+    playBtn.textContent = '⏸';
   }
-})();
-
+}
+ 
 function togglePlay(){
+  if(!PLAYLIST.length) return;
+  if(!audio.src || audio.src === window.location.href){
+    loadTrack(0, true);
+    return;
+  }
   if(audio.paused){
-    audio.play().catch(()=>{});
+    audio.play().catch(() => {});
     playBtn.textContent = '⏸';
   } else {
     audio.pause();
     playBtn.textContent = '▶';
   }
 }
-
-function seekBy(s){ audio.currentTime = Math.max(0, audio.currentTime + s); }
-
+ 
+function prevTrack(){ loadTrack(currentIndex - 1, !audio.paused); }
+function nextTrack(){ loadTrack(currentIndex + 1, !audio.paused); }
+ 
 function seekClick(e){
   const rect = document.getElementById('progress-wrap').getBoundingClientRect();
   const pct = (e.clientX - rect.left) / rect.width;
   if(audio.duration) audio.currentTime = pct * audio.duration;
 }
-
-function fmtTime(s){
-  if(!s || isNaN(s)) return '0:00';
-  const m = Math.floor(s/60);
-  const sec = Math.floor(s%60).toString().padStart(2,'0');
-  return m + ':' + sec;
-}
-
+ 
 audio.addEventListener('timeupdate', function(){
   if(audio.duration){
     progressBar.style.width = (audio.currentTime / audio.duration * 100) + '%';
     playerTime.textContent = fmtTime(audio.currentTime) + ' / ' + fmtTime(audio.duration);
   }
 });
-
-audio.addEventListener('ended', function(){ playBtn.textContent = '▶'; });
+ 
+audio.addEventListener('ended', function(){
+  // auto-advance; loop back to start after last track
+  loadTrack(currentIndex + 1, true);
+});
+ 
+// Init: load first track (no autoplay until user clicks)
+if(PLAYLIST.length) loadTrack(0, false);
 
 // ══════════════════════════════════════════════
 // CLI
