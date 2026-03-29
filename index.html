@@ -1053,8 +1053,8 @@ function togglePlay(){
   }
 }
  
-function prevTrack(){ loadTrack(currentIndex - 1, !audio.paused); }
-function nextTrack(){ loadTrack(currentIndex + 1, !audio.paused); }
+function prevTrack(){ loadTrack(currentIndex - 1, true); }
+function nextTrack(){ loadTrack(currentIndex + 1, true); }
  
 function seekClick(e){
   const rect = document.getElementById('progress-wrap').getBoundingClientRect();
