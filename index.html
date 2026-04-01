@@ -274,17 +274,24 @@
     .custom-player {
       border: 2px solid var(--border-dark);
       background: #0d1a30;
-      padding: 6px 8px;
+      padding: 6px 0px;
       display: flex;
       flex-direction: column;
       gap: 4px;
+      overflow: hidden;
     }
     .player-track {
       color: var(--cli-green);
       font-size: 9px;
       overflow: hidden;
       white-space: nowrap;
-      text-overflow: ellipsis;
+    }
+    .player-track.scrolling {
+      animation: scrollText 10s linear infinite;
+    }
+    @keyframes scrollText {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
     }
     .player-controls {
       display: flex;
@@ -1040,11 +1047,20 @@ function loadTrack(index, autoplay = false){
   currentIndex = ((index % PLAYLIST.length) + PLAYLIST.length) % PLAYLIST.length;
   const track = PLAYLIST[currentIndex];
   audio.src = track.src;
-  trackName.textContent = '♪ ' + track.title;
+  const baseText = '♪ ' + track.title;
+  trackName.textContent = baseText;
+  trackName.classList.remove('scrolling');
   progressBar.style.width = '0%';
   playerTime.textContent = '0:00';
   playBtn.textContent = '▶';
   buildQueue();
+  // Check if text needs scrolling
+  setTimeout(() => {
+    if (trackName.scrollWidth > trackName.clientWidth) {
+      trackName.textContent = baseText + ' ' + baseText;
+      trackName.classList.add('scrolling');
+    }
+  }, 0);
   if(autoplay){
     audio.play().catch(() => {});
     playBtn.textContent = '⏸';
