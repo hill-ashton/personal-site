@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>~* my little corner of the web *~</title>
+  <title>~*ashtann's page*~</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet" />
@@ -703,14 +703,17 @@
         <div class="custom-player">
           <div class="player-track" id="player-track-name">no file loaded — edit src in HTML</div>
           <div class="player-controls">
+            <button class="player-btn" id="prev-btn" onclick="prevTrack()">⏮</button>
             <button class="player-btn" id="play-btn" onclick="togglePlay()">▶</button>
-            <button class="player-btn" onclick="seekBy(-5)">«</button>
-            <button class="player-btn" onclick="seekBy(5)">»</button>
+            <button class="player-btn" id="next-btn" onclick="nextTrack()">⏭</button>
+            <button class="player-btn" onclick="seekBy(-5)">-5s</button>
+            <button class="player-btn" onclick="seekBy(5)">+5s</button>
             <div class="player-progress-wrap" id="progress-wrap" onclick="seekClick(event)">
               <div class="player-progress-bar" id="progress-bar"></div>
             </div>
             <span class="player-time" id="player-time">0:00</span>
           </div>
+          <div id="player-queue" class="player-queue" style="margin-top:8px;font-size:11px;color:var(--text-muted);"></div>
         </div>
         <!-- ↓↓↓ SET YOUR AUDIO FILE SRC HERE ↓↓↓ -->
         <audio id="site-audio" src="your-song.mp3" loop></audio>
@@ -1010,6 +1013,9 @@ const progressBar = document.getElementById('progress-bar');
 const playerTime  = document.getElementById('player-time');
 const trackName   = document.getElementById('player-track-name');
 const queueEl     = document.getElementById('player-queue');
+
+if(prevBtn) prevBtn.addEventListener('click', prevTrack);
+if(nextBtn) nextBtn.addEventListener('click', nextTrack);
  
 let currentIndex = 0;
  
@@ -1064,6 +1070,11 @@ function togglePlay(){
  
 function prevTrack(){ loadTrack(currentIndex - 1, true); }
 function nextTrack(){ loadTrack(currentIndex + 1, true); }
+function seekBy(seconds){
+  if(audio.duration){
+    audio.currentTime = Math.min(Math.max(0, audio.currentTime + seconds), audio.duration);
+  }
+}
  
 function seekClick(e){
   const rect = document.getElementById('progress-wrap').getBoundingClientRect();
