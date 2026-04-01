@@ -706,14 +706,11 @@
             <button class="player-btn" id="prev-btn" onclick="prevTrack()">⏮</button>
             <button class="player-btn" id="play-btn" onclick="togglePlay()">▶</button>
             <button class="player-btn" id="next-btn" onclick="nextTrack()">⏭</button>
-            <button class="player-btn" onclick="seekBy(-5)">-5s</button>
-            <button class="player-btn" onclick="seekBy(5)">+5s</button>
             <div class="player-progress-wrap" id="progress-wrap" onclick="seekClick(event)">
               <div class="player-progress-bar" id="progress-bar"></div>
             </div>
             <span class="player-time" id="player-time">0:00</span>
           </div>
-          <div id="player-queue" class="player-queue" style="margin-top:8px;font-size:11px;color:var(--text-muted);"></div>
         </div>
         <!-- ↓↓↓ SET YOUR AUDIO FILE SRC HERE ↓↓↓ -->
         <audio id="site-audio" src="your-song.mp3" loop></audio>
@@ -1027,6 +1024,7 @@ function fmtTime(s){
 }
  
 function buildQueue(){
+  if(!queueEl) return;
   queueEl.innerHTML = '';
   PLAYLIST.forEach((track, i) => {
     const div = document.createElement('div');
