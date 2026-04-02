@@ -9,23 +9,23 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-main: rgba(255,255,255,0.82);
+      --bg-main: rgba(255,255,255,0.95);
       --bg-panel: rgba(255,255,255,0.72);
-      --bg-header: rgba(210,225,255,0.88);
-      --bg-tab: rgba(180,200,240,0.7);
+      --bg-header: rgba(225,210,255,0.88);
+      --bg-tab: rgba(200,180,240,0.7);
       --bg-tab-active: rgba(255,255,255,0.92);
-      --bg-tab-hover: rgba(220,230,255,0.9);
-      --border: #7799cc;
-      --border-dark: #4466aa;
-      --accent: #3355aa;
+      --bg-tab-hover: rgba(230,220,255,0.9);
+      --border: #9977cc;
+      --border-dark: #6644aa;
+      --accent: #5533aa;
       --accent2: #cc3377;
       --text: #1a1a2e;
-      --text-muted: #556688;
-      --link: #0033cc;
+      --text-muted: #665588;
+      --link: #3300cc;
       --link-visited: #660099;
       --cli-bg: #0a0a0f;
-      --cli-green: #00ff88;
-      --cli-dim: #005533;
+      --cli-green: #a548fb;
+      --cli-dim: #5c00b3;
       --shadow: 2px 2px 0px rgba(0,0,0,0.18);
       --font: 'JetBrains Mono', 'Courier New', monospace;
     }
@@ -38,35 +38,17 @@
       color: var(--text);
       min-height: 100vh;
       background-color: #1a1a2e;
-      background-image:
-        repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(100,130,200,0.07) 31px, rgba(100,130,200,0.07) 32px),
-        repeating-linear-gradient(90deg, transparent, transparent 31px, rgba(100,130,200,0.07) 31px, rgba(100,130,200,0.07) 32px),
-        radial-gradient(ellipse at 20% 30%, rgba(60,80,180,0.35) 0%, transparent 55%),
-        radial-gradient(ellipse at 80% 70%, rgba(160,60,120,0.25) 0%, transparent 55%),
-        radial-gradient(ellipse at 50% 50%, rgba(20,20,60,1) 0%, rgba(10,10,30,1) 100%);
+      background-image: url('images/backgrounds/kingdomOfZeal.gif');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       display: flex;
       justify-content: center;
       align-items: flex-start;
       padding: 24px 0 48px;
     }
 
-    /* ── Starfield ── */
-    #stars {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-    .star {
-      position: absolute;
-      background: #fff;
-      border-radius: 50%;
-      animation: twinkle var(--d) ease-in-out infinite alternate;
-      animation-delay: var(--delay);
-    }
-    @keyframes twinkle { from { opacity: 0.1; } to { opacity: 0.9; } }
+
 
     /* ── Main Container ── */
     #site-wrap {
@@ -568,8 +550,7 @@
 </head>
 <body>
 
-<!-- ── Starfield ── -->
-<div id="stars"></div>
+
 
 <!-- ── CLI Overlay ── -->
 <div id="cli-overlay">
@@ -596,7 +577,7 @@
     <span id="site-title">~<span>*</span> sanctuary <span>*</span>~</span>
     <div id="header-marquee">
       <marquee scrollamount="2" behavior="scroll">
-        ✦ you've reached a checkpoint, save your game? ✦ you're filled with determination ✦ reject convenience ✦ you are visitor #<span id="visitor-count">000421</span> ✦ &nbsp;&nbsp;&nbsp;
+        ✦ you've reached a checkpoint, save your game? ✦ you're filled with determination ✦ reject convenience ✦ you are visitor #<span id="visitor-count">000000</span> ✦ &nbsp;&nbsp;&nbsp;
       </marquee>
     </div>
   </div>
@@ -659,7 +640,7 @@
           <a href="https://backloggd.com/u/ashtann_/" style="color:var(--link);font-size:9px;">backloggd</a>
         </div>
         <hr class="avatar-divider" />
-        <div class="hit-counter">👁 <span id="counter-disp">000421</span></div>
+        <div class="hit-counter">👁 <span id="counter-disp">000000</span></div>
       </div>
 
       <!-- Welcome -->
@@ -909,26 +890,7 @@
 </div><!-- /site-wrap -->
 
 <script>
-// ══════════════════════════════════════════════
-// STARS
-// ══════════════════════════════════════════════
-(function(){
-  const container = document.getElementById('stars');
-  for(let i = 0; i < 140; i++){
-    const s = document.createElement('div');
-    s.className = 'star';
-    const size = Math.random() * 2.2 + 0.5;
-    s.style.cssText = `
-      width:${size}px;height:${size}px;
-      top:${Math.random()*100}%;
-      left:${Math.random()*100}%;
-      --d:${(Math.random()*3+1.5).toFixed(2)}s;
-      --delay:-${(Math.random()*5).toFixed(2)}s;
-      opacity:${Math.random()*0.5+0.1};
-    `;
-    container.appendChild(s);
-  }
-})();
+
 
 // ══════════════════════════════════════════════
 // PAGE ROUTING
@@ -1278,7 +1240,23 @@ document.addEventListener('keydown', function(e){
     toggleCLI();
   }
 });
+//TODO: Fix Goat Counter, make sure it works to properly count and display visits.
+// ══════════════════════════════════════════════
+// GOATCOUNTER ON-PAGE COUNT DISPLAY
+// ══════════════════════════════════════════════
+(function(){
+  const t = setInterval(function() {
+    if (window.goatcounter && window.goatcounter.visit_count) {
+      clearInterval(t);
+      // Insert GoatCounter page view count into existing placeholders
+      window.goatcounter.visit_count({ append: '#visitor-count' });
+      window.goatcounter.visit_count({ append: '#counter-disp' });
+    }
+  }, 100);
+})();
+
 </script>
+<script data-goatcounter="https://ashtann.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 </body>
 </html>
